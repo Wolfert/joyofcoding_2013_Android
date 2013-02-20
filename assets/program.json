@@ -1,0 +1,116 @@
+{
+    "events": [
+        {
+            "title": "Registration",
+            "time": "8:30",
+            "speaker": "",
+            "color": 0,
+            "location": "general",
+            "contentURL": ""
+        },
+        {
+            "title": "Keynote",
+            "time": "9:30",
+            "speaker": "Michael Feathers",
+            "color": 1,
+            "location": "Main stage",
+            "contentURL": "http://joyofcoding.org/sessions/feathers.html"
+        },
+        {
+            "title": "The Joy of TDD on the Raspberry Pi",
+            "time": "10:30",
+            "speaker": "Marc Evers, Willem van den Ende and Rob Westgeest",
+            "color": 2,
+            "location": "Left wing",
+            "contentURL": "http://joyofcoding.org/sessions/raspberry.html"
+        },
+        {
+            "title": "Testing and refactoring Legacy Code",
+            "time": "10:30",
+            "speaker": "Sandro Mancuso",
+            "color": 1,
+            "location": "Main stage",
+            "contentURL": "http://joyofcoding.org/sessions/mancuso.html"
+        },
+        {
+            "title": "Enjoying client-side development with AngularJS",
+            "time": "10:30",
+            "speaker": "Robin Roestenburg, Kees de Kooter and Jettro Coenradie",
+            "color": 2,
+            "location": "Right wing",
+            "contentURL": "http://joyofcoding.org/sessions/angularjs.html"
+        },
+        {
+            "title": "A little Graph Theory for the busy developer",
+            "time": "11:30",
+            "speaker": "Jim Webber",
+            "color": 1,
+            "location": "Main stage",
+            "contentURL": "http://joyofcoding.org/sessions/webber.html"
+        },
+        {
+            "title": "Lunch",
+            "time": "12:30",
+            "speaker": "",
+            "color": 0,
+            "location": "general",
+            "contentURL": ""
+        },
+        {
+            "title": "Killing me softly - with this Pair",
+            "time": "13:30",
+            "speaker": "Jonathan Perret and Emmanuel Gaillot",
+            "color": 1,
+            "location": "Main stage",
+            "contentURL": "http://joyofcoding.org/sessions/pair.html"
+        },
+        {
+            "title": "Developers Anonymous",
+            "time": "14:00",
+            "speaker": "Johan Martinsson and Rémy Sanlaville",
+            "color": 2,
+            "location": "Left wing",
+            "contentURL": "http://joyofcoding.org/sessions/anonymous.html"
+        },
+        {
+            "title": "The Poutsma Principles",
+            "time": "14:00",
+            "speaker": "Arjen Poutsma",
+            "color": 1,
+            "location": "Main stage",
+            "contentURL": "http://joyofcoding.org/sessions/poutsma.html"
+        },
+        {
+            "title": "FP State of mind",
+            "time": "14:00",
+            "speaker": "Matthijs Ooms and Michel Rijnders",
+            "color": 2,
+            "location": "Right wing",
+            "contentURL": "http://joyofcoding.org/sessions/fp.html"
+        },
+        {
+            "title": "Java is from Mars, Ruby is from Venus",
+            "time": "15:00",
+            "speaker": "Paolo Perrotta",
+            "color": 1,
+            "location": "Main stage",
+            "contentURL": "http://joyofcoding.org/sessions/perrotta.html"
+        },
+        {
+            "title": "Keynote",
+            "time": "16:00",
+            "speaker": "Chad Fowler",
+            "color": 1,
+            "location": "Main stage",
+            "contentURL": "http://joyofcoding.org/sessions/fowler.html"
+        },
+        {
+            "title": "Time for beer!",
+            "time": "17:00",
+            "speaker": "",
+            "color": 0,
+            "location": "general",
+            "contentURL": ""
+        }
+    ]
+}
