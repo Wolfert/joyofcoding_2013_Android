@@ -29,13 +29,16 @@ public class ProgramActivity extends Activity {
 		for(int i = 0; i < events.size(); i++) {
 			values[i] = events.get(i).getTitle();
 		} 
+		// get data from the table by the ListAdapter
+		EventListAdapter eventAdapter = new EventListAdapter(this, R.layout.eventlistrow, events);
 
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-		  android.R.layout.simple_list_item_1, android.R.id.text1, values);
+//		
+//		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+//		  android.R.layout.simple_list_item_1, android.R.id.text1, values);
 
 		
 		// Assign adapter to ListView
-		listView.setAdapter(adapter); 
+		listView.setAdapter(eventAdapter); 
 		
 		return true;
 	}
