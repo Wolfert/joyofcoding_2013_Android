@@ -1,5 +1,7 @@
 package com.example.joyofcoding;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -20,23 +22,18 @@ public class ProgramActivity extends Activity {
 		getMenuInflater().inflate(R.menu.activity_program, menu);
 		
 		ProgramParser parser = new ProgramParser("program.json", this);
-		parser.parse();
+		ArrayList<Event> events = parser.getEvents();
 		
 		ListView listView = (ListView) findViewById(R.id.mylist);
-		String[] values = new String[] { "Android", "iPhone", "WindowsMobile",
-		  "Blackberry", "WebOS", "Ubuntu", "Windows7", "Max OS X",
-		  "Linux", "OS/2" };
-
-		// Define a new Adapter
-		// First parameter - Context
-		// Second parameter - Layout for the row
-		// Third parameter - ID of the TextView to which the data is written
-		// Forth - the Array of data
+		String[] values = new String[events.size()];
+		for(int i = 0; i < events.size(); i++) {
+			values[i] = events.get(i).getTitle();
+		} 
 
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
 		  android.R.layout.simple_list_item_1, android.R.id.text1, values);
 
-
+		
 		// Assign adapter to ListView
 		listView.setAdapter(adapter); 
 		

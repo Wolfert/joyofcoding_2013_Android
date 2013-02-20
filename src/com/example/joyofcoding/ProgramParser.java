@@ -3,7 +3,10 @@ package com.example.joyofcoding;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
@@ -26,7 +29,29 @@ public class ProgramParser {
 			parse();
 		return program;
 	}
+	
+	public ArrayList<Event> getEvents() {
+		JSONArray events;
+		ArrayList<Event> list = new ArrayList<Event>();
 
+		try {
+			events = (JSONArray) getProgram().get("events");
+			for (int i = 0; i <= events.length(); i++) {
+				JSONObject JSONEvent = events.getJSONObject(i);
+				Event event = new Event(JSONEvent.getString("title"));
+				event.setTime(JSONEvent.getString("time"));
+				event.setSpeaker(JSONEvent.getString("speaker"));
+				event.setColor(JSONEvent.getInt("color"));
+				event.setContentURL(JSONEvent.getString("contentURL"));
+				list.add(event);
+			}
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return list;
+	}
+	
 	public Boolean parse(){
 		Log.i(this.getClass().getSimpleName(), "Parsing program file");
 		try{
