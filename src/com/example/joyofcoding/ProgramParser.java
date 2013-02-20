@@ -70,5 +70,9 @@ public class ProgramParser {
 		}
 		return true;
 	}
+	
+	public Event getEvent(int index){
+		return getEvents().get(index);
+	}
 
 }

@@ -22,6 +22,7 @@
                      android:id="@+id/title"
                      android:layout_width="fill_parent"
                      android:layout_height="wrap_content"
+                     android:gravity="left"
                      android:text="Title" 
                      android:layout_weight="10" 
                      android:height="40sp" />

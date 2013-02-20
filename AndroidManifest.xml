@@ -7,7 +7,10 @@
     <uses-sdk
         android:minSdkVersion="8"
         android:targetSdkVersion="16" />
-
+    
+ 	<uses-permission
+ 	    android:name="android.permission.INTERNET" />
+    
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -21,6 +24,14 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name="com.example.joyofcoding.EventDetailActivity"
+            android:label="@string/title_activity_event_detail"
+            android:parentActivityName="com.example.joyofcoding.ProgramActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.joyofcoding.ProgramActivity" />
         </activity>
     </application>
 

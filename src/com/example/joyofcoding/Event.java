@@ -1,6 +1,9 @@
 package com.example.joyofcoding;
 
-public class Event {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Event implements Parcelable {
 	
 	private String time;
 	private String title;
@@ -63,5 +66,39 @@ public class Event {
 	public void setColor(int color) {
 		this.color = color;
 	}
+
+	@Override
+	public int describeContents() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel out, int flags) {
+		out.writeString(time);
+		out.writeString(title);
+		out.writeString(speaker);
+		out.writeString(location);
+		out.writeInt(color);
+		out.writeString(contentURL);
+	}
 	
+	@SuppressWarnings("unused")
+	private Event(Parcel in) {
+		this.time =  in.readString();
+		this.title =  in.readString();
+		this.speaker =  in.readString();
+		this.location =  in.readString();
+		this.color =  in.readInt();
+		this.contentURL =  in.readString();
+	}
+	 public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+         public Event createFromParcel(Parcel in) {
+             return new Event(in); 
+         }
+
+         public Event[] newArray(int size) {
+             return new Event[size];
+         }
+     };
 }
