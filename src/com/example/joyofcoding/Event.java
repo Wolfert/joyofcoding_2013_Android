@@ -9,15 +9,9 @@ public class Event {
 	private String contentURL;
 	private int color; 
 
-	public Event(String time, String title, String speaker, String location,
-			String contentURL, int color) {
+	public Event(String title) {
 		super();
-		this.time = time;
 		this.title = title;
-		this.speaker = speaker;
-		this.location = location;
-		this.contentURL = contentURL;
-		this.color = color;
 	}
 
 	@Override
@@ -49,4 +43,25 @@ public class Event {
 	public int getColor() {
 		return color;
 	}
+
+	public void setTime(String time) {
+		this.time = time;
+	}
+
+	public void setSpeaker(String speaker) {
+		this.speaker = speaker;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
+	}
+
+	public void setContentURL(String contentURL) {
+		this.contentURL = contentURL;
+	}
+
+	public void setColor(int color) {
+		this.color = color;
+	}
+	
 }
