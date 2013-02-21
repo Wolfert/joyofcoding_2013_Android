@@ -21,7 +21,6 @@
             android:gravity="left"
             android:maxLines="1"
             android:singleLine="false"
-            android:text="10:30"
             android:textColor="#8E8E89"
             android:textStyle="bold"
             android:typeface="monospace" />
@@ -37,7 +36,6 @@
             android:gravity="left"
             android:maxLines="2"
             android:singleLine="false"
-            android:text="The Joy of TDD on the Raspberry Pi"
             android:textColor="#434343"/>
     </TableRow>
 
@@ -57,7 +55,6 @@
             android:layout_gravity="top|left"
             android:maxLines="2"
             android:singleLine="false"
-            android:text="Marc Evers, Willem van den Ende and Rob Westgeest"
             android:textColor="#9D9799"
             android:textSize="12sp"  />
     </TableRow>
