@@ -3,6 +3,7 @@ package com.example.joyofcoding;
 import java.util.List;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,11 +27,11 @@ public class EventListAdapter extends ArrayAdapter<Event> {
 	public View getView(int position, View convertView, ViewGroup parent) {
 	    View view = convertView;
 
-	    if (view == null) {
+//	    if (view == null) {
 	        LayoutInflater inflator;
 	        inflator = LayoutInflater.from(getContext());
 	        view = inflator.inflate(R.layout.eventlistrow, null);
-	    }
+//	    }
 
 	    Event event = events.get(position);
 
@@ -41,8 +42,32 @@ public class EventListAdapter extends ArrayAdapter<Event> {
 	        tvTime.setText(event.getTime());
 	        tvTitle.setText(event.getTitle());
 	        tvSpeaker.setText(event.getSpeaker());
+	        
+	        int color = event.getColor();
+	        switch (color) {
+	        	case 0: //Green
+	        		color = 0x329CA958;
+	        		view.setEnabled(false);
+	        		break;
+	        	case 1: // Red
+	        		color = 0x32AE5E72;
+	        		break;
+	        	case 2: // Blue
+	        		color = 0x3262879F;
+	        		break;
+	        	default:
+	        		color = 0x329CA958;
+	        		break;
+	        }
+	        view.setBackgroundColor(color);
 	    }
-	    
 	    return view;
+	}
+	public boolean isEnabled(int position) {
+		return events.get(position).getColor() == 0 ? false : true;
+	}
+	
+	public boolean areAllItemsEnabled() {
+		return false;
 	}
 }

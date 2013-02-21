@@ -48,7 +48,7 @@ public class ProgramActivity extends Activity {
 				startActivity(intent);
 			  }
 		  });
+
 		return true;
 	}
-
 }

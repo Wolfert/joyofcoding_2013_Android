@@ -1,26 +1,45 @@
 package com.example.joyofcoding;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
+import android.widget.TextView;
 
 public class EventDetailActivity extends Activity {
-
+	public static WebView contentView;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_event_detail);
 		// Show the Up button in the action bar.
 		getActionBar().setDisplayHomeAsUpEnabled(true);
-		
+
 		Bundle bundle = getIntent().getExtras();
 		Event event = bundle.getParcelable("com.example.joyofcoding.Event");
-		WebView contentView = (WebView) findViewById(R.id.contentView);
+
+		TextView title = (TextView) findViewById(R.id.title);
+		if (title != null)
+			title.setText(event.getTitle());
+		else
+			Log.i("derp", "null");
+		
+		contentView = (WebView) findViewById(R.id.contentView);
 		contentView.getSettings().setJavaScriptEnabled(true);
-		contentView.loadUrl(event.getContentURL());
+		contentView.setBackgroundColor(0x00000000);
+		DownloadExternalContentTask task  = new DownloadExternalContentTask();
+		task.execute(event.getContentURL());
 	}
 
 	@Override
@@ -46,5 +65,31 @@ public class EventDetailActivity extends Activity {
 		}
 		return super.onOptionsItemSelected(item);
 	}
-
 }
+
+class DownloadExternalContentTask extends AsyncTask<String, Void, String> {
+    private Exception exception;
+
+    protected String doInBackground(String... args) {
+    	String html = "<style type=\"text/css\"></style>\n<link href=\'http://fonts.googleapis.com/css?family=Monda|Arvo\' rel=\'stylesheet\' type=\'text/css\'>\n<link href=\"css/bootstrap.min.css\" rel=\"stylesheet\" type=\"text/css\">\n<link href=\"css/bootstrap-responsive.min.css\" rel=\"stylesheet\" type=\"text/css\">\n<link href=\"css/font-awesome.min.css\" rel=\"stylesheet\">\n<link href=\"css/jquery.fancybox.css?v=2.1.3\" rel=\"stylesheet\" type=\"text/css\">\n<link href=\"css/style.css\" rel=\"stylesheet\" type=\"text/css\">\n\n";
+        try {
+        	HttpClient client = new DefaultHttpClient();  
+		    HttpGet get = new HttpGet(args[0]);
+		    HttpResponse responseGet = client.execute(get);  
+		    HttpEntity resEntityGet = responseGet.getEntity();  
+		    if (resEntityGet != null) {
+		    	html += EntityUtils.toString(resEntityGet);
+		    }
+            return html;
+        } catch (Exception e) {
+            this.exception = e;
+            return null;
+        }
+    }
+
+    protected void onPostExecute(String content) {
+        // TODO: check this.exception 
+        // TODO: do something with the feed
+    	EventDetailActivity.contentView.loadDataWithBaseURL("http://joyofcoding.org", content, "text/html", "UTF-8", "");
+    }
+ }
