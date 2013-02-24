@@ -36,9 +36,7 @@ public class ProgramActivity extends Activity {
 		// get data from the table by the ListAdapter
 		EventListAdapter eventAdapter = new EventListAdapter(this, R.layout.eventlistrow, events);
 		
-		// Assign adapter to ListView
-		listView.setAdapter(eventAdapter); 
-		
+
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			  @Override
 			  public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -48,7 +46,15 @@ public class ProgramActivity extends Activity {
 				startActivity(intent);
 			  }
 		  });
-
+	 
+		View headerView = View.inflate(this, R.layout.activity_program_header, null);
+		View footerView = View.inflate(this, R.layout.activity_program_footer, null);
+		listView.addHeaderView(headerView);
+		listView.addFooterView(footerView);
+		
+		// Assign adapter to ListView
+		listView.setAdapter(eventAdapter); 
+		
 		return true;
 	}
 }
