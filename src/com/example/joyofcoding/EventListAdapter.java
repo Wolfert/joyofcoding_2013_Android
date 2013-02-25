@@ -2,8 +2,8 @@ package com.example.joyofcoding;
 
 import java.util.List;
 
-import android.app.ActionBar.LayoutParams;
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 public class EventListAdapter extends ArrayAdapter<Event> {
 	private List<Event> events;
-
+	private Context context;
 	public EventListAdapter(Context context, int textViewResourceId) {
 		super(context, textViewResourceId);
 		// TODO Auto-generated constructor stub
@@ -22,6 +22,7 @@ public class EventListAdapter extends ArrayAdapter<Event> {
 	public EventListAdapter(Context context, int resource, List<Event> events) {
 	    super(context, resource, events);
 	    this.events = events;
+		this.context = context;
 	}
 
 	@Override
@@ -41,7 +42,10 @@ public class EventListAdapter extends ArrayAdapter<Event> {
 	        tvTime.setText(event.getTime());
 	        tvTitle.setText(event.getTitle());
 	        tvSpeaker.setText(event.getSpeaker());
-	        
+
+			Typeface font = Typeface.createFromAsset(context.getAssets(), "Arvo-Regular.ttf");
+			tvSpeaker.setTypeface(font);
+
 	        int color = event.getColor();
 	        switch (color) {
 	        	case 0: //Green
