@@ -8,6 +8,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -15,6 +16,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.TextView;
 
 public class EventDetailActivity extends Activity {
@@ -38,8 +40,20 @@ public class EventDetailActivity extends Activity {
 		contentView = (WebView) findViewById(R.id.contentView);
 		contentView.getSettings().setJavaScriptEnabled(true);
 		contentView.setBackgroundColor(0x00000000);
+	    final ProgressDialog pd = ProgressDialog.show(this, null, "Loading..");
+
+		contentView.setWebViewClient(new WebViewClient() {
+            public void onPageFinished(WebView view, String url) {
+                if(pd.isShowing()&&pd!=null)
+                {
+                    pd.dismiss();
+                }
+            }
+		});
 		DownloadExternalContentTask task  = new DownloadExternalContentTask();
 		task.execute(event.getContentURL());
+		
+		
 	}
 
 	@Override
@@ -80,6 +94,7 @@ class DownloadExternalContentTask extends AsyncTask<String, Void, String> {
 		    if (resEntityGet != null) {
 		    	html += EntityUtils.toString(resEntityGet);
 		    }
+
             return html;
         } catch (Exception e) {
             this.exception = e;
