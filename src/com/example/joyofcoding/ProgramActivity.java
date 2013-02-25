@@ -5,10 +5,13 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.EditText;
 import android.widget.ListView;
 
 public class ProgramActivity extends Activity {
@@ -46,11 +49,33 @@ public class ProgramActivity extends Activity {
 				startActivity(intent);
 			  }
 		  });
+
+
 	 
 		View headerView = View.inflate(this, R.layout.activity_program_header, null);
 		View footerView = View.inflate(this, R.layout.activity_program_footer, null);
 		listView.addHeaderView(headerView);
 		listView.addFooterView(footerView);
+
+        EditText twitter = (EditText)findViewById(R.id.username);
+        // This is where we start our
+        twitter.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        });
+
 		
 		// Assign adapter to ListView
 		listView.setAdapter(eventAdapter); 

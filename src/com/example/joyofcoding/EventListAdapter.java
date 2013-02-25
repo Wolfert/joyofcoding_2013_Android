@@ -16,7 +16,6 @@ public class EventListAdapter extends ArrayAdapter<Event> {
 	private Context context;
 	public EventListAdapter(Context context, int textViewResourceId) {
 		super(context, textViewResourceId);
-		// TODO Auto-generated constructor stub
 	}
 
 	public EventListAdapter(Context context, int resource, List<Event> events) {
@@ -51,7 +50,6 @@ public class EventListAdapter extends ArrayAdapter<Event> {
 	        	case 0: //Green
 	        		color = 0x329CA958;
 	        		view.setEnabled(false);
-	        		view.setLayoutParams(new ListView.LayoutParams(ListView.LayoutParams.WRAP_CONTENT, 42));
 	        		break;
 	        	case 1: // Red
 	        		color = 0x32AE5E72;
