@@ -17,6 +17,7 @@ public class ProgramParser {
 	private String fileName;
 	private Context context;
 	private JSONObject program;
+	private String prevTime;
 
 	public ProgramParser(String fileName, Context context) {
 		super();
@@ -33,13 +34,21 @@ public class ProgramParser {
 	public ArrayList<Event> getEvents() {
 		JSONArray events;
 		ArrayList<Event> list = new ArrayList<Event>();
-
+		prevTime = "";
+		
 		try {
 			events = (JSONArray) getProgram().get("events");
 			for (int i = 0; i <= events.length(); i++) {
 				JSONObject JSONEvent = events.getJSONObject(i);
 				Event event = new Event(JSONEvent.getString("title"));
-				event.setTime(JSONEvent.getString("time"));
+				
+				if(prevTime.equals(JSONEvent.getString("time"))) {
+					event.setTime("");
+				} else {
+					event.setTime(JSONEvent.getString("time"));
+					prevTime = event.getTime();
+				}
+				
 				event.setSpeaker(JSONEvent.getString("speaker"));
 				event.setColor(JSONEvent.getInt("color"));
 				event.setContentURL(JSONEvent.getString("contentURL"));
