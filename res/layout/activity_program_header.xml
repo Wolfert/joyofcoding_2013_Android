@@ -9,39 +9,51 @@
         android:layout_height="150dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_weight="3"
         android:src="@drawable/logo" />
+
+    <View
+        android:id="@+id/view1"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/username" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/imageView1"
+        android:text="Geofence check in"
+        android:textSize="17sp" />
 
     <EditText
         android:id="@+id/username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/imageView1"
-        android:layout_toLeftOf="@+id/button1"
-        android:layout_weight="3"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textView1"
         android:ems="10"
         android:hint="@string/username_holder"
         android:singleLine="true"
-        android:windowSoftInputMode="stateHidden" >
+        android:textSize="14sp"
+        android:windowSoftInputMode="stateHidden" />
 
-        <requestFocus />
-    </EditText>
+    <TextView
+        android:id="@+id/TextView01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/username"
+        android:text="Program"
+        android:textSize="17sp"
+        android:layout_marginBottom="10dp" />
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="20dp"
+        android:layout_height="10dp"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/username"
+        android:layout_below="@+id/view1"
         android:layout_weight="1" />
-
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_alignTop="@+id/username"
-        android:layout_toRightOf="@+id/imageView1"
-        android:layout_weight="1"
-        android:onClick="saveUsername"
-        android:text="@string/button_save" />
 
 </RelativeLayout>

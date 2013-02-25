@@ -20,8 +20,7 @@ public final class R {
         public static final int navy_blue_navbar=0x7f020006;
     }
     public static final class id {
-        public static final int TableRow01=0x7f070006;
-        public static final int button1=0x7f070005;
+        public static final int TextView01=0x7f070006;
         public static final int contentView=0x7f070000;
         public static final int imageView1=0x7f070003;
         public static final int mylist=0x7f070001;
@@ -29,7 +28,8 @@ public final class R {
         public static final int textView1=0x7f070002;
         public static final int time=0x7f070007;
         public static final int title=0x7f070008;
-        public static final int username=0x7f070004;
+        public static final int username=0x7f070005;
+        public static final int view1=0x7f070004;
     }
     public static final class layout {
         public static final int activity_event_detail=0x7f030000;

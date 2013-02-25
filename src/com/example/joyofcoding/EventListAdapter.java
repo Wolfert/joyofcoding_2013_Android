@@ -2,12 +2,13 @@ package com.example.joyofcoding;
 
 import java.util.List;
 
+import android.app.ActionBar.LayoutParams;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class EventListAdapter extends ArrayAdapter<Event> {
@@ -27,14 +28,12 @@ public class EventListAdapter extends ArrayAdapter<Event> {
 	public View getView(int position, View convertView, ViewGroup parent) {
 	    View view = convertView;
 
-//	    if (view == null) {
-	        LayoutInflater inflator;
-	        inflator = LayoutInflater.from(getContext());
-	        view = inflator.inflate(R.layout.eventlistrow, null);
-//	    }
+        LayoutInflater inflator;
+        inflator = LayoutInflater.from(getContext());
+        view = inflator.inflate(R.layout.eventlistrow, null);
 
 	    Event event = events.get(position);
-
+	    
 	    if (event != null) {
 	        TextView tvTime = (TextView) view.findViewById(R.id.time);
 	        TextView tvTitle = (TextView) view.findViewById(R.id.title);
@@ -48,6 +47,7 @@ public class EventListAdapter extends ArrayAdapter<Event> {
 	        	case 0: //Green
 	        		color = 0x329CA958;
 	        		view.setEnabled(false);
+	        		view.setLayoutParams(new ListView.LayoutParams(ListView.LayoutParams.WRAP_CONTENT, 42));
 	        		break;
 	        	case 1: // Red
 	        		color = 0x32AE5E72;
