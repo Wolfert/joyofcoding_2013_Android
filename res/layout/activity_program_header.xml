@@ -56,4 +56,12 @@
         android:layout_below="@+id/view1"
         android:layout_weight="1" />
 
+    <ImageView
+        android:id="@+id/infoIcon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignBottom="@+id/textView1"
+        android:layout_toRightOf="@+id/username"
+        android:src="@drawable/iconbutton" />
+
 </RelativeLayout>
