@@ -18,6 +18,7 @@ public class ProgramParser {
 	private Context context;
 	private JSONObject program;
 	private String prevTime;
+	private ArrayList<Event> list;
 
 	public ProgramParser(String fileName, Context context) {
 		super();
@@ -32,8 +33,11 @@ public class ProgramParser {
 	}
 	
 	public ArrayList<Event> getEvents() {
-		JSONArray events;
-		ArrayList<Event> list = new ArrayList<Event>();
+		if(list != null)
+			return list;
+		
+		JSONArray events;		
+		list = new ArrayList<Event>();
 		prevTime = "";
 		
 		try {
