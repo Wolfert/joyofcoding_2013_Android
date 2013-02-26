@@ -20,8 +20,9 @@ import android.webkit.WebViewClient;
 import android.widget.TextView;
 
 public class EventDetailActivity extends Activity {
-	public static WebView contentView;
-	@Override
+	private static WebView contentView;
+
+    @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_event_detail);
@@ -44,13 +45,13 @@ public class EventDetailActivity extends Activity {
 
 		contentView.setWebViewClient(new WebViewClient() {
             public void onPageFinished(WebView view, String url) {
-                if(pd.isShowing()&&pd!=null)
+                if(pd.isShowing() && pd != null)
                 {
                     pd.dismiss();
                 }
             }
 		});
-		DownloadExternalContentTask task  = new DownloadExternalContentTask();
+		DownloadExternalContentTask task  = new DownloadExternalContentTask(contentView);
 		task.execute(event.getContentURL());
 		
 		
@@ -82,7 +83,11 @@ public class EventDetailActivity extends Activity {
 }
 
 class DownloadExternalContentTask extends AsyncTask<String, Void, String> {
-    private Exception exception;
+    private WebView contentView;
+
+    public DownloadExternalContentTask(WebView contentView) {
+        this.contentView = contentView;
+    }
 
     protected String doInBackground(String... args) {
     	String html = "<style type=\"text/css\"></style>\n<link href=\'http://fonts.googleapis.com/css?family=Monda|Arvo\' rel=\'stylesheet\' type=\'text/css\'>\n<link href=\"css/bootstrap.min.css\" rel=\"stylesheet\" type=\"text/css\">\n<link href=\"css/bootstrap-responsive.min.css\" rel=\"stylesheet\" type=\"text/css\">\n<link href=\"css/font-awesome.min.css\" rel=\"stylesheet\">\n<link href=\"css/jquery.fancybox.css?v=2.1.3\" rel=\"stylesheet\" type=\"text/css\">\n<link href=\"css/style.css\" rel=\"stylesheet\" type=\"text/css\">\n\n";
@@ -97,14 +102,13 @@ class DownloadExternalContentTask extends AsyncTask<String, Void, String> {
 
             return html;
         } catch (Exception e) {
-            this.exception = e;
+            // Ignore
             return null;
         }
     }
 
     protected void onPostExecute(String content) {
-        // TODO: check this.exception 
-        // TODO: do something with the feed
-    	EventDetailActivity.contentView.loadDataWithBaseURL("http://joyofcoding.org", content, "text/html", "UTF-8", "");
+        if (content != null)
+    	    contentView.loadDataWithBaseURL("http://joyofcoding.org", content, "text/html", "UTF-8", "");
     }
  }

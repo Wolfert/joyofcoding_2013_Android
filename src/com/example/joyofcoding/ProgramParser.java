@@ -38,7 +38,7 @@ public class ProgramParser {
 		
 		try {
 			events = (JSONArray) getProgram().get("events");
-			for (int i = 0; i <= events.length(); i++) {
+			for (int i = 0; i < events.length(); i++) {
 				JSONObject JSONEvent = events.getJSONObject(i);
 				Event event = new Event(JSONEvent.getString("title"));
 				
