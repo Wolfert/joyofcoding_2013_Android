@@ -35,7 +35,7 @@ public class EventDetailActivity extends Activity {
 			getActionBar().setDisplayHomeAsUpEnabled(true);
 		}
 		Bundle bundle = getIntent().getExtras();
-		Event event = bundle.getParcelable("com.example.joyofcoding.Event");
+		Event event = bundle.getParcelable("com.lunatech.joyofcoding.Event");
 
 		TextView title = (TextView) findViewById(R.id.title);
 		if (title != null)
