@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.util.Log;
+import com.lunatech.joyofcoding.R;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;

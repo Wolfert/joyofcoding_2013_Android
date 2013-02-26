@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
+import com.lunatech.joyofcoding.R;
 
 public class EventDetailActivity extends Activity {
 	private static WebView contentView;

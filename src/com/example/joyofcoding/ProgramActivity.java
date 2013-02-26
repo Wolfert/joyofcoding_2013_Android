@@ -21,6 +21,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import com.lunatech.joyofcoding.R;
 
 public class ProgramActivity extends Activity {
 
@@ -125,7 +126,7 @@ public class ProgramActivity extends Activity {
 				  return;
 				Intent intent = new Intent(view.getContext(), EventDetailActivity.class);
 				Event event = parser.getEvent(position);
-				intent.putExtra("com.example.joyofcoding.Event", event);
+				intent.putExtra("com.lunatech.joyofcoding.Event", event);
 				startActivity(intent);
 			  }
 		  });

@@ -2,6 +2,7 @@ package com.example.joyofcoding;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import com.lunatech.joyofcoding.R;
 
 public class Event implements Parcelable {
 	

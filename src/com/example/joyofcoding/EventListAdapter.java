@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import com.lunatech.joyofcoding.R;
 
 public class EventListAdapter extends ArrayAdapter<Event> {
 	private List<Event> events;
