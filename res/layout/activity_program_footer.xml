@@ -14,7 +14,7 @@
         android:text="@string/footer" />
 
     <ImageView
-        android:id="@+id/imageView1"
+        android:id="@+id/footerImage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/textView1"

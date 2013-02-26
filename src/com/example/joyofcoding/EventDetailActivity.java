@@ -10,6 +10,7 @@ import org.apache.http.util.EntityUtils;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.util.Log;
@@ -26,9 +27,12 @@ public class EventDetailActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_event_detail);
+		
+		
 		// Show the Up button in the action bar.
-		getActionBar().setDisplayHomeAsUpEnabled(true);
-
+		if (Build.VERSION.SDK_INT >= 13) {
+			getActionBar().setDisplayHomeAsUpEnabled(true);
+		}
 		Bundle bundle = getIntent().getExtras();
 		Event event = bundle.getParcelable("com.example.joyofcoding.Event");
 

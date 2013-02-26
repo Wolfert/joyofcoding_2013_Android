@@ -4,15 +4,22 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.PendingIntent;
-import android.content.*;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 public class ProgramActivity extends Activity {
@@ -32,11 +39,12 @@ public class ProgramActivity extends Activity {
     //private static final float LATITUDE = 51.934238f;
     //private static final float LONGITUDE = 4.471843f;
 
-    private static final float LATITUDE = 51.919587f;
-    private static final float LONGITUDE = 4.456048f;
-
+    private static final float LATITUDE = 51.897648f;
+    private static final float LONGITUDE = 4.494342f;
+    
     private BroadcastReceiver receiver;
-
+    private ArrayList<Event> events;
+    
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -44,7 +52,7 @@ public class ProgramActivity extends Activity {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         receiver = new ProximityIntentReceiver(this);
         parser = new ProgramParser("program.json", this);
-		ArrayList<Event> events = parser.getEvents();
+		events = parser.getEvents();
 		
 		ListView listView = (ListView) findViewById(R.id.mylist);
 		String[] values = new String[events.size()];
@@ -53,22 +61,20 @@ public class ProgramActivity extends Activity {
 		} 
 		// get data from the table by the ListAdapter
 		EventListAdapter eventAdapter = new EventListAdapter(this, R.layout.eventlistrow, events);
-		listView.setOnItemClickListener(new OnItemClickListener() {
-			  @Override
-			  public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				Intent intent = new Intent(view.getContext(), EventDetailActivity.class);
-				Event event = parser.getEvent(position);
-				intent.putExtra("com.example.joyofcoding.Event", event);
-				startActivity(intent);
-			  }
-		  });
 
 
 	 
 		View headerView = View.inflate(this, R.layout.activity_program_header, null);
 		View footerView = View.inflate(this, R.layout.activity_program_footer, null);
+		
+		// footerView receives ListView's onItemClick event, wtf Android?
+		footerView.setEnabled(false);
 		listView.addHeaderView(headerView);
 		listView.addFooterView(footerView);
+		
+		addListenerToListView(listView);
+		addListenerToLogo();
+		addInfoListener();
 
         EditText twitter = (EditText)findViewById(R.id.username);
         // Get our twitter view
@@ -91,7 +97,6 @@ public class ProgramActivity extends Activity {
 
             }
         });
-
 		
 		// Assign adapter to ListView
 		listView.setAdapter(eventAdapter);
@@ -99,6 +104,44 @@ public class ProgramActivity extends Activity {
         addProximityAlert(LATITUDE, LONGITUDE);
 		
     }
+
+	private void addInfoListener() {
+		ImageView iv = (ImageView) findViewById(R.id.infoIcon);
+		iv.setOnClickListener(new OnClickListener() {
+			  @Override
+			  public void onClick(View view) {
+				  Uri uriUrl = Uri.parse("http://joyofcoding.lunatech.com"); 
+				  Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);  
+				  startActivity(launchBrowser);
+			  }
+		});
+	}
+
+	private void addListenerToListView(ListView listView) {
+		listView.setOnItemClickListener(new OnItemClickListener() {
+			  @Override
+			  public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				if(position >= events.size())
+				  return;
+				Intent intent = new Intent(view.getContext(), EventDetailActivity.class);
+				Event event = parser.getEvent(position);
+				intent.putExtra("com.example.joyofcoding.Event", event);
+				startActivity(intent);
+			  }
+		  });
+	}
+
+	private void addListenerToLogo() {
+		ImageView iv = (ImageView) findViewById(R.id.footerImage);
+		iv.setOnClickListener(new OnClickListener() {
+			  @Override
+			  public void onClick(View view) {
+				  Uri uriUrl = Uri.parse("http://lunatech.com"); 
+				  Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);  
+				  startActivity(launchBrowser);
+			  }
+		});
+	}
 
     private void addProximityAlert(double latitude, double longitude) {
 
