@@ -63,8 +63,6 @@ public class ProgramActivity extends Activity {
 		// get data from the table by the ListAdapter
 		EventListAdapter eventAdapter = new EventListAdapter(this, R.layout.eventlistrow, events);
 
-
-	 
 		View headerView = View.inflate(this, R.layout.activity_program_header, null);
 		View footerView = View.inflate(this, R.layout.activity_program_footer, null);
 		
@@ -125,7 +123,7 @@ public class ProgramActivity extends Activity {
 				if(position >= events.size())
 				  return;
 				Intent intent = new Intent(view.getContext(), EventDetailActivity.class);
-				Event event = parser.getEvent(position);
+				Event event = parser.getEvent(position - 1);
 				intent.putExtra("com.lunatech.joyofcoding.Event", event);
 				startActivity(intent);
 			  }

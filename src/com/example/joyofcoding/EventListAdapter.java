@@ -27,11 +27,9 @@ public class EventListAdapter extends ArrayAdapter<Event> {
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-	    View view = convertView;
 
-        LayoutInflater inflator;
-        inflator = LayoutInflater.from(getContext());
-        view = inflator.inflate(R.layout.eventlistrow, null);
+        LayoutInflater inflator = LayoutInflater.from(getContext());
+        View view = inflator.inflate(R.layout.eventlistrow, null);
 
 	    Event event = events.get(position);
 	    

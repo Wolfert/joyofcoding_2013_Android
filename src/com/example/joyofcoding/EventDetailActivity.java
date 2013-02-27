@@ -50,8 +50,7 @@ public class EventDetailActivity extends Activity {
 
 		contentView.setWebViewClient(new WebViewClient() {
             public void onPageFinished(WebView view, String url) {
-                if(pd.isShowing() && pd != null)
-                {
+                if(pd.isShowing() && pd != null) {
                     pd.dismiss();
                 }
             }

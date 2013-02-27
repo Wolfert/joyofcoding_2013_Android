@@ -68,20 +68,25 @@ public class ProgramParser {
 	
 	public Boolean parse(){
 		Log.i(this.getClass().getSimpleName(), "Parsing program file");
+        BufferedReader reader = null;
 		try{
 			InputStream program = context.getResources().getAssets().open(fileName);
 			InputStreamReader streamReader = new InputStreamReader(program);
-			BufferedReader reader = new BufferedReader(streamReader);
+			reader = new BufferedReader(streamReader);
 			StringBuilder builder = new StringBuilder();
-			for (String line = null; (line = reader.readLine()) != null;) {
+            String line = reader.readLine();
+			while(line != null) {
 			    builder.append(line).append("\n");
+                line = reader.readLine();
 			}
 			this.program = new JSONObject(builder.toString());
-		    reader.close();
-		} catch(Exception e){
+
+		} catch(Throwable e){
 		    e.printStackTrace();
 		    return false;
-		}
+		} finally {
+            try { if (reader != null) reader.close(); } catch(Throwable e) {}
+        }
 		return true;
 	}
 	
