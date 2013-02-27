@@ -1,4 +1,4 @@
-package com.example.joyofcoding;
+package com.lunatech.joyofcoding;
 
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -19,6 +19,7 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
 
     private static final int NOTIFICATION_ID = 1000;
     private ProgramActivity activity;
+    private Context context;
 
     public ProximityIntentReceiver(ProgramActivity activity) {
         super();
@@ -27,12 +28,12 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-
+    	this.context = context;
         String key = LocationManager.KEY_PROXIMITY_ENTERING;
         Boolean entering = intent.getBooleanExtra(key, false);
         String twitterHandle = activity.retrieveTwitterFromPreferences();
-        if (twitterHandle != null) {
-
+        if (twitterHandle != null && twitterHandle.length() > 1) {
+        	
             if (twitterHandle.length() > 1) {
                 if (twitterHandle.toString().startsWith("@"))
                     twitterHandle = twitterHandle.substring(1);
@@ -94,14 +95,14 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
         notification.flags |= Notification.FLAG_SHOW_LIGHTS;
 
-        notification.defaults |= Notification.DEFAULT_VIBRATE;
+//        notification.defaults |= Notification.DEFAULT_VIBRATE;
         notification.defaults |= Notification.DEFAULT_LIGHTS;
 
         notification.ledARGB = Color.WHITE;
         notification.ledOnMS = 1500;
         notification.ledOffMS = 1500;
         notification.tickerText = text;
-
+        
         return notification;
     }
 
@@ -128,4 +129,9 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
         protected void onPostExecute(String content) {
         }
     }
+
+
+	public void forceCheckout(Context context, String twitterhandle) {
+		checkout(twitterhandle, context);
+	}
 }

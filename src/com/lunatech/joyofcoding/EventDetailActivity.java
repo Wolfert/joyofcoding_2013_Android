@@ -1,4 +1,4 @@
-package com.example.joyofcoding;
+package com.lunatech.joyofcoding;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;

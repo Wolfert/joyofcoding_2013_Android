@@ -1,4 +1,4 @@
-package com.example.joyofcoding;
+package com.lunatech.joyofcoding;
 
 import android.os.Parcel;
 import android.os.Parcelable;

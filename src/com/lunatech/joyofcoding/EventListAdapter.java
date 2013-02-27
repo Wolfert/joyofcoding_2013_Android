@@ -1,4 +1,4 @@
-package com.example.joyofcoding;
+package com.lunatech.joyofcoding;
 
 import java.util.List;
 

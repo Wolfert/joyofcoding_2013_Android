@@ -1,6 +1,6 @@
-package com.example.joyofcoding;
-
-import java.util.ArrayList;
+	package com.lunatech.joyofcoding;
+	
+	import java.util.ArrayList;
 
 import android.app.Activity;
 import android.app.PendingIntent;
@@ -14,10 +14,12 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -33,41 +35,49 @@ public class ProgramActivity extends Activity {
     private static final String TWITTER_HANDLE_KEY = "TWITTER_HANDLE_KEY";
 
     private static final String PROX_ALERT_INTENT =
-            "com.example.joyofcoding.ProximityIntentReceiver";
+            "com.lunatech.joyofcoding.ProximityIntentReceiver";
 
     private LocationManager locationManager;
 
     //private static final float LATITUDE = 51.934238f;
     //private static final float LONGITUDE = 4.471843f;
 
-    private static final float LATITUDE = 51.897648f;
-    private static final float LONGITUDE = 4.494342f;
+//    private static final float LATITUDE = 51.897648f;
+//    private static final float LONGITUDE = 4.494342f;
     
-    private BroadcastReceiver receiver;
+    private static final float LATITUDE = 51.919606f;
+    private static final float LONGITUDE = 4.456255f;
+
+    
     private ArrayList<Event> events;
+
+	private PendingIntent proximityIntent;
     
+	private BroadcastReceiver receiver;
+	
+	private boolean monitoringEnabled = false;
+		
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
+    	Log.d(getClass().getSimpleName(), "onCreate");
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_program);
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        receiver = new ProximityIntentReceiver(this);
-        parser = new ProgramParser("program.json", this);
-		events = parser.getEvents();
 		
-		ListView listView = (ListView) findViewById(R.id.mylist);
+		setContentView(R.layout.activity_program);
+        parser = new ProgramParser("program.json", this);
+		events = parser.getEvents();	
+		
+		ListView listView = (ListView) findViewById(R.id.programlist);
 		String[] values = new String[events.size()];
 		for(int i = 0; i < events.size(); i++) {
 			values[i] = events.get(i).getTitle();
 		} 
+
 		// get data from the table by the ListAdapter
 		EventListAdapter eventAdapter = new EventListAdapter(this, R.layout.eventlistrow, events);
 
 		View headerView = View.inflate(this, R.layout.activity_program_header, null);
 		View footerView = View.inflate(this, R.layout.activity_program_footer, null);
 		
-		// footerView receives ListView's onItemClick event, wtf Android?
-		footerView.setEnabled(false);
 		listView.addHeaderView(headerView);
 		listView.addFooterView(footerView);
 		
@@ -75,11 +85,20 @@ public class ProgramActivity extends Activity {
 		addListenerToLogo();
 		addInfoListener();
 
+        // Get our twitterhandle input field and attach a listener
         EditText twitter = (EditText)findViewById(R.id.username);
-        // Get our twitter view
         twitter.setText(retrieveTwitterFromPreferences());
 
-        // This is where we start our
+        addTextChangedListener(twitter);
+		 
+		// Assign adapter to ListView
+		listView.setAdapter(eventAdapter);
+
+		receiver = new ProximityIntentReceiver(this);
+    }
+
+	private void addTextChangedListener(EditText twitter) {
+		// This is where we start our
         twitter.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -96,13 +115,7 @@ public class ProgramActivity extends Activity {
 
             }
         });
-		
-		// Assign adapter to ListView
-		listView.setAdapter(eventAdapter);
-
-        addProximityAlert(LATITUDE, LONGITUDE);
-		
-    }
+	}
 
 	private void addInfoListener() {
 		ImageView iv = (ImageView) findViewById(R.id.infoIcon);
@@ -141,6 +154,32 @@ public class ProgramActivity extends Activity {
 			  }
 		});
 	}
+	
+	public void enableMonitoring(View view) {
+		if(!monitoringEnabled){
+			Log.i(this.getClass().getSimpleName(), "enable monitoring");
+			// start monitoring, toggle button text.
+			((Button) view).setText("Disable");
+	        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+			addProximityAlert(LATITUDE, LONGITUDE);
+			//receiver
+			monitoringEnabled = true;
+		} else {
+			Log.i(this.getClass().getSimpleName(), "stop monitoring");
+			// stop monitoring, toggle button text, check out user.
+			((Button) view).setText("Enable");
+	    	PendingIntent pi = getProximityIntent();
+	    	
+	    	
+	    	// WIP: Get ProximityIntentReceiver instance, call force checkout!
+			Log.wtf("WIP", "Get ProximityIntentReceiver instance, call force checkout!");
+//	    	((ProximityIntentReceiver) pi.).forceCheckout(this, retrieveTwitterFromPreferences());
+			
+	    	locationManager.removeProximityAlert(pi);
+	    	pi.cancel();
+			monitoringEnabled = false;
+		}
+	}
 
     private void addProximityAlert(double latitude, double longitude) {
 
@@ -155,21 +194,40 @@ public class ProgramActivity extends Activity {
         );
 
         IntentFilter filter = new IntentFilter(PROX_ALERT_INTENT);
-        registerReceiver(new ProximityIntentReceiver(this), filter);
+        registerReceiver(receiver, filter);
     }
 
 	private PendingIntent getProximityIntent() {
-		Intent intent = new Intent(PROX_ALERT_INTENT);
-        PendingIntent proximityIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+		if(proximityIntent == null) {
+			Intent intent = new Intent(PROX_ALERT_INTENT);
+        	proximityIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+		}
 		return proximityIntent;
 	}
 
     @Override
-    protected void onDestroy(){
-    	super.onDestroy();
-    	locationManager.removeProximityAlert(getProximityIntent());
-    }
+    protected void onStop(){
+    	Log.d(getClass().getSimpleName(), "onStop");
+    	unregisterReceiver(receiver);
 
+    	super.onStop();
+    }
+    
+    @Override
+    protected void onDestroy(){
+    	Log.d(getClass().getSimpleName(), "onDestroy");
+    	super.onDestroy();
+    }
+    
+    @Override
+    public void finish() {
+    	Log.d(getClass().getSimpleName(), "finish");
+    	PendingIntent pi = getProximityIntent();
+    	locationManager.removeProximityAlert(pi);
+    	pi.cancel();
+        super.finish();
+    }
+    
     protected void saveTwitterInPreferences(String twitter) {
         SharedPreferences prefs =
                 this.getSharedPreferences(getClass().getSimpleName(),

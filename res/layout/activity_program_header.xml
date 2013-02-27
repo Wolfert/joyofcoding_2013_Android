@@ -45,11 +45,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/username"
+        android:layout_marginBottom="10dp"
         android:text="Program"
-        android:textSize="17sp"
-        android:layout_marginBottom="10dp" />
+        android:textSize="17sp" />
 
     <View
+        android:id="@+id/view2"
         android:layout_width="match_parent"
         android:layout_height="10dp"
         android:layout_alignParentLeft="true"
@@ -63,5 +64,15 @@
         android:layout_alignBottom="@+id/textView1"
         android:layout_toRightOf="@+id/username"
         android:src="@drawable/iconbutton" />
+
+    <Button
+        android:id="@+id/button1"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="34dp"
+        android:layout_alignLeft="@+id/infoIcon"
+        android:layout_alignTop="@+id/username"
+        android:text="@string/enable_button"
+        android:onClick="enableMonitoring" />
 
 </RelativeLayout>
