@@ -144,8 +144,7 @@ public class ProgramActivity extends Activity {
 
     private void addProximityAlert(double latitude, double longitude) {
 
-        Intent intent = new Intent(PROX_ALERT_INTENT);
-        PendingIntent proximityIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+        PendingIntent proximityIntent = getProximityIntent();
 
         locationManager.addProximityAlert(
                 LATITUDE, // the latitude of the central point of the alert region
@@ -159,6 +158,17 @@ public class ProgramActivity extends Activity {
         registerReceiver(new ProximityIntentReceiver(this), filter);
     }
 
+	private PendingIntent getProximityIntent() {
+		Intent intent = new Intent(PROX_ALERT_INTENT);
+        PendingIntent proximityIntent = PendingIntent.getBroadcast(this, 0, intent, 0);
+		return proximityIntent;
+	}
+
+    @Override
+    protected void onDestroy(){
+    	super.onDestroy();
+    	locationManager.removeProximityAlert(getProximityIntent());
+    }
 
     protected void saveTwitterInPreferences(String twitter) {
         SharedPreferences prefs =
