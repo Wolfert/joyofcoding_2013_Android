@@ -14,12 +14,12 @@ import com.lunatech.joyofcoding.R;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import static com.lunatech.joyofcoding.Utils.*;
 
 public class ProximityIntentReceiver extends BroadcastReceiver {
 
     private static final int NOTIFICATION_ID = 1000;
     private ProgramActivity activity;
-    private Context context;
 
     public ProximityIntentReceiver(ProgramActivity activity) {
         super();
@@ -28,29 +28,19 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-    	this.context = context;
-        String key = LocationManager.KEY_PROXIMITY_ENTERING;
+    	String key = LocationManager.KEY_PROXIMITY_ENTERING;
         Boolean entering = intent.getBooleanExtra(key, false);
-        String twitterHandle = activity.retrieveTwitterFromPreferences();
-        if (twitterHandle != null && twitterHandle.length() > 1) {
-        	
-            if (twitterHandle.length() > 1) {
-                if (twitterHandle.toString().startsWith("@"))
-                    twitterHandle = twitterHandle.substring(1);
-            }
-
-            if (entering) {
+        String twitterHandle = getFormattedTwitterHandler(activity.retrieveTwitterFromPreferences());
+        if (isNotEmpty(twitterHandle)) {
+          if (entering) {
                 Log.d(getClass().getSimpleName(), "entering");
-                // Get our twitter handle
                 checkin(twitterHandle, context);
             }
             else {
                 Log.d(getClass().getSimpleName(), "exiting");
                 checkout(twitterHandle, context);
             }
-
-
-        }
+       }
     }
 
     private void checkin(String twitterHandle, Context context) {
@@ -60,23 +50,23 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
         Intent i = new Intent(context, ProgramActivity.class);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, i , 0);
 
-        Notification notification = createNotification("You are near Joy of Coding.");
+        Notification notification = createNotification("You entered Joy of Coding.");
         notification.setLatestEventInfo(context,
-                "JoyOfCoding!", "You are near Joy of Coding.", pendingIntent);
+                "JoyOfCoding!", "You entered Joy of Coding.", pendingIntent);
 
         notificationManager.notify(NOTIFICATION_ID, notification);
         DashboardTask task  = new DashboardTask("http://joyofcoding.lunatech.com/checkin/" + twitterHandle);
         task.execute();
     }
 
-    private void checkout(String twitterHandle, Context context) {
+    public void checkout(String twitterHandle, Context context) {
             NotificationManager notificationManager =
                     (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
             Intent i = new Intent(context, ProgramActivity.class);
             PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, i , 0);
 
-            Notification notification = createNotification("You are left Joy of Coding.");
+            Notification notification = createNotification("You left Joy of Coding.");
             notification.setLatestEventInfo(context,
                     "JoyOfCoding!", "You left Joy of Coding.", pendingIntent);
 
@@ -95,7 +85,6 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
         notification.flags |= Notification.FLAG_AUTO_CANCEL;
         notification.flags |= Notification.FLAG_SHOW_LIGHTS;
 
-//        notification.defaults |= Notification.DEFAULT_VIBRATE;
         notification.defaults |= Notification.DEFAULT_LIGHTS;
 
         notification.ledARGB = Color.WHITE;
@@ -107,7 +96,7 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
     }
 
 
-    class DashboardTask extends AsyncTask<Void, Void, Void> {
+    public static class DashboardTask extends AsyncTask<Void, Void, Void> {
 
         private String url;
 
@@ -117,8 +106,8 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
 
         protected Void doInBackground(Void... args) {
             HttpClient client = new DefaultHttpClient();
-            HttpGet get = new HttpGet(url);
             try {
+                HttpGet get = new HttpGet(url);
                 client.execute(get);
             } catch(Throwable e) {
                 // Ignore
@@ -130,8 +119,4 @@ public class ProximityIntentReceiver extends BroadcastReceiver {
         }
     }
 
-
-	public void forceCheckout(Context context, String twitterhandle) {
-		checkout(twitterhandle, context);
-	}
 }

@@ -65,14 +65,6 @@
         android:layout_toRightOf="@+id/username"
         android:src="@drawable/iconbutton" />
 
-    <Button
-        android:id="@+id/button1"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="34dp"
-        android:layout_alignLeft="@+id/infoIcon"
-        android:layout_alignTop="@+id/username"
-        android:text="@string/enable_button"
-        android:onClick="enableMonitoring" />
+
 
 </RelativeLayout>

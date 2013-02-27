@@ -15,15 +15,16 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.View;
+    import android.view.KeyEvent;
+    import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.ListView;
-import com.lunatech.joyofcoding.R;
+    import android.view.inputmethod.EditorInfo;
+    import android.view.inputmethod.InputMethodManager;
+    import android.widget.*;
+    import android.widget.AdapterView.OnItemClickListener;
+    import com.lunatech.joyofcoding.R;
+
+import static com.lunatech.joyofcoding.Utils.*;
 
 public class ProgramActivity extends Activity {
 
@@ -33,46 +34,40 @@ public class ProgramActivity extends Activity {
     private static final long PROX_ALERT_EXPIRATION = -1;
 
     private static final String TWITTER_HANDLE_KEY = "TWITTER_HANDLE_KEY";
+    private static final String MONITORING_KEY = "MONITORING_KEY";
 
     private static final String PROX_ALERT_INTENT =
             "com.lunatech.joyofcoding.ProximityIntentReceiver";
 
     private LocationManager locationManager;
 
-    //private static final float LATITUDE = 51.934238f;
-    //private static final float LONGITUDE = 4.471843f;
+    private static final float LATITUDE = 51.934238f;
+    private static final float LONGITUDE = 4.471843f;
 
 //    private static final float LATITUDE = 51.897648f;
 //    private static final float LONGITUDE = 4.494342f;
     
-    private static final float LATITUDE = 51.919606f;
-    private static final float LONGITUDE = 4.456255f;
+    //private static final float LATITUDE = 51.919606f;
+    //private static final float LONGITUDE = 4.456255f;
 
     
     private ArrayList<Event> events;
 
-	private PendingIntent proximityIntent;
-    
-	private BroadcastReceiver receiver;
-	
-	private boolean monitoringEnabled = false;
-		
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
-    	Log.d(getClass().getSimpleName(), "onCreate");
-		super.onCreate(savedInstanceState);
-		
-		setContentView(R.layout.activity_program);
+    	super.onCreate(savedInstanceState);
+    	setContentView(R.layout.activity_program);
         parser = new ProgramParser("program.json", this);
-		events = parser.getEvents();	
-		
-		ListView listView = (ListView) findViewById(R.id.programlist);
+		events = parser.getEvents();
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        ListView listView = (ListView) findViewById(R.id.programlist);
 		String[] values = new String[events.size()];
 		for(int i = 0; i < events.size(); i++) {
 			values[i] = events.get(i).getTitle();
 		} 
 
-		// get data from the table by the ListAdapter
+		// Get data from the table by the ListAdapter
 		EventListAdapter eventAdapter = new EventListAdapter(this, R.layout.eventlistrow, events);
 
 		View headerView = View.inflate(this, R.layout.activity_program_header, null);
@@ -85,56 +80,71 @@ public class ProgramActivity extends Activity {
 		addListenerToLogo();
 		addInfoListener();
 
-        // Get our twitterhandle input field and attach a listener
-        EditText twitter = (EditText)findViewById(R.id.username);
+        // Get our twitter handle input field and attach a listener
+        final EditText twitter = (EditText)findViewById(R.id.username);
         twitter.setText(retrieveTwitterFromPreferences());
 
-        addTextChangedListener(twitter);
+        if (isNotEmpty(retrieveTwitterFromPreferences())) {
+            enableMonitoring();
+        }
+
+        twitter.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        twitter.setOnEditorActionListener(new TextView.OnEditorActionListener()
+        {
+            private String previousString;
+
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
+            {
+                if (EditorInfo.IME_ACTION_DONE == actionId) {
+                    final String twitterHandle = twitter.getText().toString();
+                    savePreferences(twitterHandle);
+                    if (isNotEmpty(twitterHandle)) {
+                        enableMonitoring();
+                    } else {
+                        disableMonitoring(previousString);
+                    }
+
+                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(twitter.getWindowToken(), 0);
+
+
+                    return true;
+                }
+                this.previousString = twitter.getText().toString();
+                return false;
+            }
+
+        });
+
+
+        registerReceiver(receiver, filter);
 		 
 		// Assign adapter to ListView
 		listView.setAdapter(eventAdapter);
-
-		receiver = new ProximityIntentReceiver(this);
     }
-
-	private void addTextChangedListener(EditText twitter) {
-		// This is where we start our
-        twitter.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-               saveTwitterInPreferences(s.toString());
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-	}
 
 	private void addInfoListener() {
 		ImageView iv = (ImageView) findViewById(R.id.infoIcon);
 		iv.setOnClickListener(new OnClickListener() {
 			  @Override
 			  public void onClick(View view) {
-				  Uri uriUrl = Uri.parse("http://joyofcoding.lunatech.com"); 
-				  Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);  
+				  Uri uriUrl = Uri.parse("http://joyofcoding.lunatech.com");
+				  Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
 				  startActivity(launchBrowser);
 			  }
 		});
-	}
+
+
+    }
 
 	private void addListenerToListView(ListView listView) {
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			  @Override
 			  public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				if(position >= events.size())
+          		if(position > events.size()) {
 				  return;
+                }
 				Intent intent = new Intent(view.getContext(), EventDetailActivity.class);
 				Event event = parser.getEvent(position - 1);
 				intent.putExtra("com.lunatech.joyofcoding.Event", event);
@@ -144,46 +154,51 @@ public class ProgramActivity extends Activity {
 	}
 
 	private void addListenerToLogo() {
-		ImageView iv = (ImageView) findViewById(R.id.footerImage);
-		iv.setOnClickListener(new OnClickListener() {
-			  @Override
-			  public void onClick(View view) {
-				  Uri uriUrl = Uri.parse("http://lunatech.com"); 
-				  Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);  
-				  startActivity(launchBrowser);
-			  }
-		});
-	}
+        RelativeLayout footer = (RelativeLayout) findViewById(R.id.footer);
+        footer.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Uri uriUrl = Uri.parse("http://lunatech.com");
+                Intent launchBrowser = new Intent(Intent.ACTION_VIEW, uriUrl);
+                startActivity(launchBrowser);
+            }
+        });
+
+    }
 	
-	public void enableMonitoring(View view) {
-		if(!monitoringEnabled){
+	public void enableMonitoring() {
+        boolean monitoringEnabled = retrieveMonitoringPreferences();
+        if(!monitoringEnabled){
 			Log.i(this.getClass().getSimpleName(), "enable monitoring");
-			// start monitoring, toggle button text.
-			((Button) view).setText("Disable");
-	        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-			addProximityAlert(LATITUDE, LONGITUDE);
-			//receiver
-			monitoringEnabled = true;
-		} else {
-			Log.i(this.getClass().getSimpleName(), "stop monitoring");
-			// stop monitoring, toggle button text, check out user.
-			((Button) view).setText("Enable");
-	    	PendingIntent pi = getProximityIntent();
-	    	
-	    	
-	    	// WIP: Get ProximityIntentReceiver instance, call force checkout!
-			Log.wtf("WIP", "Get ProximityIntentReceiver instance, call force checkout!");
-//	    	((ProximityIntentReceiver) pi.).forceCheckout(this, retrieveTwitterFromPreferences());
-			
-	    	locationManager.removeProximityAlert(pi);
-	    	pi.cancel();
-			monitoringEnabled = false;
+		    addProximityAlert(LATITUDE, LONGITUDE);
+            saveMonitoringPreferences(true);
 		}
 	}
 
+    public void disableMonitoring(String previousTwitterHandle) {
+        boolean monitoringEnabled = retrieveMonitoringPreferences();
+        if (monitoringEnabled) {
+            Log.i(this.getClass().getSimpleName(), "stop monitoring");
+
+            // Checkout the user
+            if (isNotEmpty(previousTwitterHandle)) {
+                ProximityIntentReceiver.DashboardTask task  = new ProximityIntentReceiver.DashboardTask("http://joyofcoding.lunatech.com/checkin/" + previousTwitterHandle);
+                task.execute();
+            }
+
+            Intent intent = new Intent(PROX_ALERT_INTENT);
+            PendingIntent proximityIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            locationManager.removeProximityAlert(proximityIntent);
+            proximityIntent.cancel();
+            saveMonitoringPreferences(false);
+        }
+    }
+
     private void addProximityAlert(double latitude, double longitude) {
 
-        PendingIntent proximityIntent = getProximityIntent();
+        Intent intent = new Intent(PROX_ALERT_INTENT);
+        PendingIntent proximityIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         locationManager.addProximityAlert(
                 LATITUDE, // the latitude of the central point of the alert region
@@ -193,42 +208,28 @@ public class ProgramActivity extends Activity {
                 proximityIntent // will be used to generate an Intent to fire when entry to or exit from the alert region is detected
         );
 
-        IntentFilter filter = new IntentFilter(PROX_ALERT_INTENT);
-        registerReceiver(receiver, filter);
+
     }
 
-	private PendingIntent getProximityIntent() {
-		if(proximityIntent == null) {
-			Intent intent = new Intent(PROX_ALERT_INTENT);
-        	proximityIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-		}
-		return proximityIntent;
-	}
+    IntentFilter filter = new IntentFilter(PROX_ALERT_INTENT);
+    BroadcastReceiver receiver = new ProximityIntentReceiver(this);
 
-    @Override
-    protected void onStop(){
-    	Log.d(getClass().getSimpleName(), "onStop");
-    	unregisterReceiver(receiver);
-
-    	super.onStop();
-    }
-    
     @Override
     protected void onDestroy(){
-    	Log.d(getClass().getSimpleName(), "onDestroy");
+        unregisterReceiver(receiver);
     	super.onDestroy();
     }
     
     @Override
     public void finish() {
-    	Log.d(getClass().getSimpleName(), "finish");
-    	PendingIntent pi = getProximityIntent();
-    	locationManager.removeProximityAlert(pi);
-    	pi.cancel();
+        Intent intent = new Intent(PROX_ALERT_INTENT);
+        PendingIntent proximityIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        locationManager.removeProximityAlert(proximityIntent);
+        proximityIntent.cancel();
         super.finish();
     }
     
-    protected void saveTwitterInPreferences(String twitter) {
+    protected void savePreferences(String twitter) {
         SharedPreferences prefs =
                 this.getSharedPreferences(getClass().getSimpleName(),
                         Context.MODE_PRIVATE);
@@ -244,5 +245,20 @@ public class ProgramActivity extends Activity {
         return prefs.getString(TWITTER_HANDLE_KEY, "");
     }
 
+    protected void saveMonitoringPreferences(boolean monitoringEnabled) {
+        SharedPreferences prefs =
+                this.getSharedPreferences(getClass().getSimpleName(),
+                        Context.MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = prefs.edit();
+        prefsEditor.putBoolean(MONITORING_KEY, monitoringEnabled);
+        prefsEditor.commit();
+    }
+
+    protected boolean retrieveMonitoringPreferences() {
+        SharedPreferences prefs =
+                this.getSharedPreferences(getClass().getSimpleName(),
+                        Context.MODE_PRIVATE);
+        return prefs.getBoolean(MONITORING_KEY, false);
+    }
 
 }
